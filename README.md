@@ -30,3 +30,8 @@ $M$ machines needs to process $N$ jobs. Each job is associated with a release co
   - Bounds II:
     - $Pm|r_j, pmtm|\sum C_i$, delete non-preemptive constraints;
     - Solution: Shortest-Remaining-Process-Time (SRPT);
+
+### Running the code
+
+- Compile the code: make all;
+- Try the demo: python demo.py;
