@@ -172,13 +172,6 @@ if __name__ == '__main__':
   # machine_properties = np.random.randint(10, 30, size=(machine_num), dtype=np.int32)
   machine_properties = np.zeros(machine_num, dtype=np.int32)
 
-  # solving from job scheduling by BAB
-  # print("******solving by BAB*******")
-  # optimal_wait_time = np.zeros(job_num, dtype=np.int32)
-  # optimal_order = np.zeros(job_num, dtype=np.int32)
-  # job_scheduling(job_ids, request_times, process_intervals, machine_properties, optimal_wait_time, optimal_order, job_num-2)
-  # print("optimal wait time", np.sum(optimal_wait_time))
-  # print("optimal wait order", optimal_order)
   # # solving from modeling
   pmsp_solver = PMSP_MIP_TIM()
   pmsp_solver._start_up_bound(job_ids, request_times, process_intervals, machine_properties)
@@ -191,16 +184,3 @@ if __name__ == '__main__':
   sequence_eval(job_ids,request_times,process_intervals,
                 machine_properties, optimal_order, opt_wait)
   print("evaluate optimal order", opt_wait.sum())
-
-  # bound of PMSP
-  # bound, order = pmsp_solver.bound_MIP(job_ids, request_times, process_intervals, machine_properties)
-
-  # print("bound ", bound)
-  # print("order ", order)
-  
-  # MIP_wait = np.zeros(job_num, dtype=np.int32)
-  # # output for wait time and serve order with convert SRPT
-  # # get wait time for nonpreemptive
-  # sequence_eval(job_ids,request_times,process_intervals,
-  #               machine_properties, order, MIP_wait)
-  # print("evaluate order ", MIP_wait.sum())
