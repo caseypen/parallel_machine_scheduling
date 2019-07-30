@@ -1,8 +1,6 @@
 from heapq import *
 import numpy as np
 import math
-# from utils_heap import *
-# from utils_array import *
 import sys
 import os
 sys.path.append(os.path.abspath('./bin'))
