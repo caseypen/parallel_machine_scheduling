@@ -5,7 +5,7 @@ import random
 import numpy as np
 import os 
 import sys
-sys.path.append(os.path.abspath("../JSP/bin/"))
+sys.path.append(os.path.abspath("../bin/"))
 from jsp_bbs import SRPT_Preemptive_Bound, sequence_eval, job_scheduling
 
 # input to solver:
@@ -62,14 +62,17 @@ class PMSP_MIP_TIM(object):
     # TimeBound is the possible largest makespan of one machine
     # TimeBound = complete_time_max + np.max(request_times)
     self._start_up_bound(job_ids, request_times, process_times, available_times)
-    TimeBound = self.complete_time_max + np.max(request_times)
+    # TimeBound = self.complete_time_max + np.max(request_times)
+    # TimeBound = np.max(request_times) + np.max(process_times) 
+    TimeBound = np.sum(request_times) + np.sum(process_times) + np.sum(available_times)
     m.T = Set(initialize=range(TimeBound))
 
     # decision variables: completion time
     m.complete  = Var(m.J, within=NonNegativeReals)
     # decision variable: m.CHI[i,j,t] job j is processed on machine i and processed at time t
     m.CHI = Var(m.M, m.J, m.T, domain=Binary)
-
+    # minmax
+    m.max_complete = Var(range(1), domain=NonNegativeReals)
     times = np.array(range(TimeBound))
 
     # C1: each job starts processing on only one machine at only one point in time
@@ -90,7 +93,7 @@ class PMSP_MIP_TIM(object):
     
     # C3: completion time must meet requirements
     def C3_rule_(model, j):
-      return model.complete[j] >= sum((t+process_times[j]+available_times[i])*model.CHI[i,j,t] for i in m.M for t in m.T)
+      return model.complete[j] == sum((t+process_times[j]+available_times[i])*model.CHI[i,j,t] for i in m.M for t in m.T)
     m.C3 = Constraint(m.J, rule=C3_rule_)
 
     # C4: release times constraint
@@ -117,8 +120,11 @@ class PMSP_MIP_TIM(object):
         return sum_chi == 0
     m.C5 = Constraint(m.M, rule=C5_rule_)
 
+    m.C6 = Constraint(m.J, rule=lambda m, j:
+                      m.complete[j] <= m.max_complete[0])
     # objective: min sum without weights
     m.OBJ = Objective(expr = sum(m.complete[j] for j in m.J), sense=minimize)
+    # m.OBJ = Objective(expr = m.max_complete[0], sense=minimize)
 
     return m
 
@@ -150,7 +156,8 @@ class PMSP_MIP_TIM(object):
     complete = []
     for j in model.J:
       complete.append(model.complete[j]())
-
+    print("total complete time: ", np.sum(complete))
+    print("max complete time: ", model.max_complete[0]())
     start_times = np.array(complete) - process_times
     arg_start = np.argsort(start_times)
     order = job_ids[arg_start]

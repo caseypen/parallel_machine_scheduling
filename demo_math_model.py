@@ -16,14 +16,14 @@ from gantt_plot import *
 
 
 if __name__ == '__main__':
-  job_num = 10
+  job_num = 20
   machine_num = 3
   job_ids = np.arange(0, job_num, 1, dtype=np.int32)
   np.random.seed(15) # 13 is not feasible solution
   release_times = np.random.randint(0, 20, size=(job_num), dtype=np.int32)
   process_intervals = np.random.randint(10, 20, size=(job_num), dtype=np.int32)
-  machine_available_times = np.random.randint(0, 3, size=(machine_num), dtype=np.int32)
-
+  # machine_available_times = np.random.randint(0, 3, size=(machine_num), dtype=np.int32)
+  machine_available_times = np.zeros(3, dtype=np.int32)
   # solving from modeling
   # pmsp_solver = PMSP_MILP()
   pmsp_solver = PMSP_MIP_TIM()

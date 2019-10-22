@@ -8,7 +8,7 @@ import sys
 sys.path.append(os.path.abspath("../bin/"))
 # heuristic method provides some search boundary
 sys.path.append(os.path.abspath("../heuristic_model"))
-from jsp_bbs import SRPT_Preemptive_Bound, sequence_eval, job_scheduling
+from jsp_bbs import SRPT_Preemptive_Bound, sequence_eval, job_scheduling, sequence_schedules
 
 # input to solver:
 ## job_ids (N*1), request_times, process_times;
@@ -155,6 +155,7 @@ if __name__ == '__main__':
   machine_num = 3
   job_ids = np.arange(0, job_num, 1, dtype=np.int32)
   # machine_ids = np.arange(0, machine_num, 1, dtype=np.int32)
+  machine_orders = np.zeros(job_num, dtype=np.int32)
   np.random.seed(15) # 13 is not feasible solution
   request_times = np.random.randint(0, 20, size=(job_num), dtype=np.int32)
   process_intervals = np.random.randint(1, 20, size=(job_num), dtype=np.int32)
@@ -170,4 +171,7 @@ if __name__ == '__main__':
   opt_wait = np.zeros(job_num, dtype=np.int32)
   sequence_eval(job_ids,request_times,process_intervals,
                 machine_properties, optimal_order, opt_wait)
+  sequence_schedules(job_ids, request_times, process_intervals, machine_properties, optimal_order, opt_wait, 
+                      machine_orders)
   print("evaluate optimal order", opt_wait.sum())
+  print("machine_orders", machine_orders)
