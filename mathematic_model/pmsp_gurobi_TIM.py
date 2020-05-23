@@ -8,6 +8,7 @@ sys.path.append(os.path.abspath("../bin/"))
 # heuristic method provides some search boundary
 sys.path.append(os.path.abspath("../heuristic_model"))
 from jsp_bbs import SRPT_Preemptive_Bound, sequence_eval, job_scheduling, sequence_schedules
+
 StatusDict = {getattr(GRB.Status, s): s for s in dir(GRB.Status) if s.isupper()}
 
 class PMSP_Gurobi(object):
@@ -60,8 +61,8 @@ class PMSP_Gurobi(object):
     # m.setParam('TimeLimit',10)
     # # percentage of time on heuristics
     # m.setParam('Heuristics',0.5)
-
-    m.setParam('OutputFlag', 0)
+    m.setParam('Threads', 8)
+    m.setParam('OutputFlag', 1)
 
   def _formulate_schedules(self, job_ids, request_times, process_intervals,
                            machines, model):
@@ -178,9 +179,9 @@ class PMSP_Gurobi(object):
 
 
 if __name__ == '__main__':
-  start_time = time.time()
 
-  job_num = 25
+  start_time = time.time()
+  job_num = 20
   machine_num = 5
   job_ids = np.arange(0, job_num, 1, dtype=np.int32)
   np.random.seed(15) # 13 is not feasible solution
@@ -190,10 +191,12 @@ if __name__ == '__main__':
   # machine_properties = np.zeros(machine_num)
   machine_properties = np.random.randint(0, 60, size=(machine_num), dtype=np.int32)
   print("request_times", request_times)
-  pmsp_solver = PMSP_Gurobi()
   
+
+  pmsp_solver = PMSP_Gurobi()
   # solver of PMSP
   solved = pmsp_solver.solve(job_ids, request_times, process_intervals, machine_properties)
+  # print("solve time: ", time.time()-model_time)
   if solved:
     print("schedules", pmsp_solver.schedules)
     print("order", pmsp_solver.order)

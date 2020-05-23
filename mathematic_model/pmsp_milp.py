@@ -54,7 +54,7 @@ class PMSP_MILP(object):
 
     # decision variables: as tight as possible, provided by heuristic model
     self._start_up_bound(job_ids, request_times, process_times, available_times) # can be calculated from heuristic idea
-    bigM = np.sum(request_times) + np.sum(process_times) + np.min(available_times)
+    bigM = np.sum(request_times) + np.max(process_times) + np.max(available_times)
     # for getting tight boundary
     start_min = request_times.min()
     m.start  = Var(m.J, bounds=(start_min, self.start_time_max), within=NonNegativeReals)
