@@ -7,7 +7,7 @@ This repository is to solve the parallel machine scheduling problems with job re
   - Search the optimal solution with Branch and Bound algorithm;
   - A fast and sub-optimal approximate solution is also implemented.
 - Mixed integer programming:
-  - Use Pyomo to mathematically model the problem;
+  - Use Pyomo/Guropi to mathematically model the problem;
   - Solve the problem with solver;
   - Interpret the solution to machine-jobs schedule;
 
